@@ -1,0 +1,17 @@
+.gallery__like-button{
+    width: 20px;
+    height: 19px;
+    align-self: center;
+    background-color: transparent;
+    border: none;
+    background-image: url('../../../images/heart_icon.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.gallery__like-button:hover{
+    cursor: pointer;
+}
+.gallery__like-button:focus{ 
+    border: 0;
+    outline: 0;
+}

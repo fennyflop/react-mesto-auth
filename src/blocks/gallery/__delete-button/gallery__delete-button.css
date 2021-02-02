@@ -1,0 +1,18 @@
+.gallery__delete-button{
+    right: 17px;
+    top: 18px;
+    background-image: url(../../../images/Trash.svg);
+    z-index: 3;
+    position: absolute;
+    width: 18px;
+    height: 19.3px;
+    background-color: transparent;
+    border: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.gallery__delete-button:hover{
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 1s linear;
+}

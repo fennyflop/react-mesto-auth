@@ -1,0 +1,20 @@
+.header{
+    min-width: 868px;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 45px; /* Чтобы попап занимал весь экран. С margin появляеться баг */
+    height: 74px;
+    border-bottom: 1px solid rgba(84, 84, 84, .7); /*Такой же цвет, только в rgba, чтобы добавить прозрачность*/
+}
+@media screen and (max-width:  999px){
+    .header{
+        min-width: 99%;
+        max-width: 100%;
+        width: 100%;
+        margin-top: 28px;
+        height: 56px;
+    }
+}
+
+

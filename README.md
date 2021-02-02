@@ -1,7 +1,15 @@
-# Здесь будет ваш проект на Реакте с авторизацией и регистрацией
+# Mesto
+ 
+An socail-media like project soaked in interesting features and UI. Here, you can observe different posts and contribute to them.
+Edit your profile! Share your cards with the internet!
+ 
+## Using :
+* HTML
+* CSS
+* JAVASCRIPT
+* REACT
+* CRA
 
-Используйте ваши предыдущие наработки по проекту Mesto. Это может быть работа 11-го спринта или его улучшенная версия после 2-х последних спринтов. 
-
-Все запросы на авторизацию, регистрацию и проверку токена должны работать через сервис `https://auth.nomoreparties.co`. Остальные запросы, не относящиеся к этой проектной работе могут быть к бэкенду из предыдущих спринтов.
-
-Успехов!
+## Goals
+ 
+Add functionality using the React framework
