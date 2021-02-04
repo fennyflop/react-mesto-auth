@@ -7,8 +7,14 @@ import ImagePopup from '../ImagePopup/ImagePopup';
 import EditAvatarPopup from '../EditAvatarPopup/EditAvatarPopup';
 import EditProfilePopup from '../EditProfilePopup/EditProfilePopup';
 import AddPlacePopup from '../AddPlacePopup/AddPlacePopup';
+import InfoToolTip from '../InfoTooltip/InfoTooltip';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import api from '../../utils/api';
+import Register from '../Registration/Registration';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import Login from '../Login/Login';
+
 
 function App() {
 
@@ -17,7 +23,9 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [isLogged, setIsLogged] = useState(false);
 
   function onEditProfile() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
@@ -36,6 +44,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsInfoPopupOpen(false);
     setSelectedCard(null);
   }
 
@@ -133,9 +142,20 @@ function App() {
     <>
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Main onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar}> </Main>
-        {/* <Footer> </Footer>
-        <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
+        <Switch>
+          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} path="/main" loggedIn={isLogged} component={Main} />
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/">
+            {isLogged ? <Redirect to="/main" /> : <Redirect to="/login" />}
+          </Route>
+        </Switch>
+        <Footer> </Footer>
+        {/* <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
         </EditProfilePopup>
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} onClose={closeAllPopups} isOpen={isEditAvatarPopupOpen}>
         </EditAvatarPopup>
@@ -146,7 +166,8 @@ function App() {
               aria-label="Отправить форму">Да</button>
           </form>
         </PopupWithForm>
-        <ImagePopup onClose={closeAllPopups} card={selectedCard}> </ImagePopup> */}
+        <ImagePopup onClose={closeAllPopups} card={selectedCard}> </ImagePopup>
+        <InfoToolTip isOpen={false} onClose={closeAllPopups} /> */}
       </CurrentUserContext.Provider>
     </>
   );

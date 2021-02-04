@@ -13,8 +13,7 @@ function Main(props) {
 
     return (
         <main>
-            <Login />
-            {/* <section className="profile">
+            <section className="profile">
                 <div className="profile__info">
                     <div className="profile__avatar-container">
                         <img className="profile__avatar" alt="Аватарка пользователя" src={currentUser.avatar} />
@@ -38,7 +37,7 @@ function Main(props) {
                 {props.cards.map((card) => {
                     return (<Card onDelete={props.onDelete} onLike={props.onLike} onCardClick={props.onCardClick} key={card._id} card={card}></Card>)
                 })}
-            </section> */}
+            </section>
         </main>
     )
 }
