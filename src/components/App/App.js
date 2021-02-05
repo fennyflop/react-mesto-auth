@@ -25,7 +25,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
 
   function onEditProfile() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
@@ -136,6 +136,10 @@ function App() {
       .catch((res) => {
         console.log(res);
       });
+  };
+
+  function handleLogin() {
+    setIsLogged(true);
   }
 
   return (
@@ -150,7 +154,7 @@ function App() {
             <Login />
           </Route>
           <Route exact path="/">
-            {isLogged ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
+            {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
           <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Main} path="/" />
         </Switch>

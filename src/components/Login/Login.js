@@ -14,6 +14,25 @@ function Login() {
         setPassword(evt.target.value);
     };
 
+    function handleSubmit(evt) {
+        evt.preventDefault();
+        fetch('https://auth.nomoreparties.co/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                }
+            })
+    };
+
     // useEffect(() => {
     //     console.log(email, password);
     // }, [email, password]);
@@ -21,7 +40,7 @@ function Login() {
     return (
         <section className="login">
             <h1 className="login__title">Вход</h1>
-            <form className="login__form">
+            <form className="login__form" onSubmit={handleSubmit}>
                 <fieldset className="login__fieldset">
                     <input type="text" className="login__input" placeholder="Email" onChange={handleEmailChange} />
                     <input type="password" className="login__input" placeholder="Пароль" onChange={handlePasswordChange} />

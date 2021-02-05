@@ -58,3 +58,6 @@
     color: #000000;
     align-self: flex-end;
 }
+.login__submit:hover {
+    cursor: pointer;
+}

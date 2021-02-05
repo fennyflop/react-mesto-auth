@@ -11,6 +11,7 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards`, {
             headers: {
                 authorization: this._token,
+                'Content-Type': 'application/json',
             },
         })
             .then(res => {
@@ -24,6 +25,7 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/users/me`, {
             headers: {
                 authorization: this._token,
+                'Content-Type': 'application/json',
             },
         })
             .then(res => {
