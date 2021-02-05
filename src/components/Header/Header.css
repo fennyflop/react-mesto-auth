@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+.header__button {
+    color: white;
+    text-decoration: none;
+}
+.header__button:hover {
+    cursor: pointer;
+}

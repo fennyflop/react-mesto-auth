@@ -1,13 +1,30 @@
 import './Login.css';
+import { useState, useEffect } from 'react';
 
 function Login() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    function handleEmailChange(evt) {
+        setEmail(evt.target.value);
+    };
+
+    function handlePasswordChange(evt) {
+        setPassword(evt.target.value);
+    };
+
+    // useEffect(() => {
+    //     console.log(email, password);
+    // }, [email, password]);
+
     return (
         <section className="login">
             <h1 className="login__title">Вход</h1>
             <form className="login__form">
                 <fieldset className="login__fieldset">
-                    <input type="text" className="login__input" placeholder="Email" />
-                    <input type="password" className="login__input" placeholder="Пароль" />
+                    <input type="text" className="login__input" placeholder="Email" onChange={handleEmailChange} />
+                    <input type="password" className="login__input" placeholder="Пароль" onChange={handlePasswordChange} />
                 </fieldset>
                 <button type="submit" className="login__submit">Войти</button>
             </form>

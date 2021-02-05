@@ -1,14 +1,11 @@
 .registration {
-    max-width: 358px;
-    margin: auto;
     height: fit-content;
-    margin-top: 60px;
-    height: 430px;
+    max-width: 358px;
+    margin: 60px auto 0;
     display: flex;
     flex-direction: column;
 }
 .registration__title {
-    font-family: Inter;
     font-style: normal;
     font-weight: bolder;
     font-size: 24px;
@@ -19,10 +16,10 @@
 }
 .registration__form {
     width: 100%;
+    height: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex-grow : 1;
 }
 .registration__fieldset {
     padding: 0;
@@ -49,7 +46,6 @@
     outline: none;
     border-radius: 2px;
     background: #FFFFFF;
-    font-family: Inter;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -61,15 +57,17 @@
     align-self: flex-end;
 }
 .registration__text {
-    font-family: Inter;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
     line-height: 17px;
-    /* identical to box height */
-    
     text-align: center;
-    
     color: #FFFFFF;
     margin: 15px 0 0;
+}
+.registration__redirect {
+    text-decoration: none;
+}
+.registration__redirect:hover {
+    cursor: pointer;
 }

@@ -143,16 +143,16 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
         <Switch>
-          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} path="/main" loggedIn={isLogged} component={Main} />
-          <Route path="/register">
+          <Route path="/sign-up">
             <Register />
           </Route>
-          <Route path="/login">
+          <Route path="/sign-in">
             <Login />
           </Route>
           <Route exact path="/">
-            {isLogged ? <Redirect to="/main" /> : <Redirect to="/login" />}
+            {isLogged ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
           </Route>
+          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Main} path="/" />
         </Switch>
         <Footer> </Footer>
         {/* <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
