@@ -1,7 +1,7 @@
 import './Login.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-function Login() {
+function Login({ handleLogin }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,26 +16,8 @@ function Login() {
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        fetch('https://auth.nomoreparties.co/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
-                }
-            })
+        handleLogin(email, password);
     };
-
-    // useEffect(() => {
-    //     console.log(email, password);
-    // }, [email, password]);
 
     return (
         <section className="login">

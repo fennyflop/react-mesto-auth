@@ -24,13 +24,9 @@ function Registration() {
             },
             body: JSON.stringify({ email, password })
         })
-            .then((response => response.json()))
-            .then((data) => {
-                console.log(data);
-                // if (data) {
-                //     localStorage.setItem('email', data.email);
-                //     return data;
-                // }
+            .then((res => res.json()))
+            .then((res) => {
+                console.log(res);
             })
             .catch(err => console.log(err));
     }

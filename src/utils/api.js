@@ -83,8 +83,8 @@ class Api { // У меня вроде бы всё работает
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "PUT",
                 headers: {
+                    'Content-Type': 'application/json',
                     authorization: this._token,
-                    "Content-Type": "application/json",
                 },
             }).then((res) => {
                 return this._handleOriginalResponse(res);
@@ -98,6 +98,7 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards/${id}`, {
             method: "DELETE",
             headers: {
+                'Content-Type': 'application/json',
                 authorization: this._token,
             },
         }).then((res) => {
@@ -111,8 +112,8 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards`, {
             method: "POST",
             headers: {
+                'Content-Type': 'application/json',
                 authorization: this._token,
-                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 name: title,
@@ -134,8 +135,8 @@ class Api { // У меня вроде бы всё работает
 }
 
 const api = new Api({
-    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-17",
-    headers: { "Content-Type": "applicationes/json" },
+    baseUrl: "https://auth.nomoreparties.co",
+    headers: { 'Content-Type': 'application/json', },
     token: "16bbf0d2-da12-4d9c-809d-74b46ac64585",
 });
 

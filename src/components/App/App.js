@@ -11,12 +11,14 @@ import InfoToolTip from '../InfoTooltip/InfoTooltip';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import api from '../../utils/api';
 import Register from '../Registration/Registration';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Login from '../Login/Login';
 
 
-function App() {
+function App(props) {
+
+  const history = useHistory();
 
   // Статуcы попапов  и функции попапов
 
@@ -26,6 +28,7 @@ function App() {
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
   const [isLogged, setIsLogged] = useState(true);
+  const [userEmail, setUserEmail] = useState('');
 
   function onEditProfile() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
@@ -138,9 +141,35 @@ function App() {
       });
   };
 
-  function handleLogin() {
-    setIsLogged(true);
+  function handleLogin(email, password) {
+    fetch('https://auth.nomoreparties.co/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          setUserEmail(email);
+          setIsLogged(true);
+          history.push('/');
+        };
+      })
+  };
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    setIsLogged(false);
   }
+
+  useState(() => {
+    console.log(isLogged);
+  }, [isLogged]);
 
   return (
     <>
@@ -151,12 +180,12 @@ function App() {
             <Register />
           </Route>
           <Route path="/sign-in">
-            <Login />
+            <Login handleLogin={handleLogin} />
           </Route>
           <Route exact path="/">
             {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
-          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Main} path="/" />
+          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Header} path="/" />
         </Switch>
         <Footer> </Footer>
         {/* <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
