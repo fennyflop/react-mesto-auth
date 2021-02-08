@@ -58,18 +58,14 @@ function App() {
   // Пользователь не должен повторно входить
 
   useEffect(() => {
-    console.log(isLogged);
-  }, [isLogged])
-
-  useEffect(() => {
-    api.getInitialsInfo()
-      .then(({ data }) => {
-        if (data) {
-          setIsLogged(true);
-          setEmail(data.email)
-          history.push('main');
-        }
-      })
+    if (localStorage.getItem('jwt')) {
+      api.getInitialsInfo()
+        .then(({ data }) => {
+          if (data) {
+            getContent();
+          }
+        })
+    };
   }, []);
 
   // Функции, которые редактируют/добавляют информацию
@@ -107,7 +103,7 @@ function App() {
 
   // Операторы с карточками
 
-  const [cards, setCards] = useState();
+  const [cards, setCards] = useState([]);
 
   function handleAddCard(title, link) {
     api.postCard(title, link)
@@ -145,18 +141,42 @@ function App() {
 
   // Вход
 
+  useEffect(() => {
+    console.log(currentUser);
+  }, [currentUser])
+
+  function getContent() {
+    api.getInitialsInfo()
+      .then(({ data }) => {
+        if (data) {
+          setCurrentUser(data);
+          setIsLogged(true);
+          setEmail(data.email)
+          history.push('/');
+        }
+      });
+    api.getInitialCards()
+      .then(({ data }) => {
+        if (data) {
+          setCards(data);
+        }
+      })
+  }
+
   function handleLogin(email, password) {
     api.handleLogin(email, password)
       .then((data) => {
         if (data.token) {
-          setIsLogged(true);
-          setEmail(email);
-          history.push('/main');
           localStorage.setItem('jwt', data.token);
+          getContent();
+          history.push('/');
         } else {
           setSuccessState(false);
           setIsInfoPopupOpen(true);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       })
   };
 
@@ -174,7 +194,10 @@ function App() {
           setIsInfoPopupOpen(true);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err.includes('400')) {
+          console.log('Некорректно заполнено одно из полей ')
+        }
         setSuccessState(false);
         setIsInfoPopupOpen(true);
       })
@@ -193,16 +216,25 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <Header email={email} handleLogout={handleLogout} />
         <Switch>
-          <Route path="/sign-up">
-            <Register handleRegister={handleRegister} />
-          </Route>
           <Route path="/sign-in">
             <Login handleLogin={handleLogin} />
           </Route>
-          <Route exact path="">
-            {isLogged ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
+          <Route path="/sign-up">
+            <Register handleRegister={handleRegister} />
           </Route>
-          <ProtectedRoute path="/main" onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Main} />
+          {/* <Route exact path="">
+            {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          </Route> */}
+          <ProtectedRoute
+            path="/"
+            onDelete={handleCardDelete}
+            onLike={handleCardLike}
+            cards={cards}
+            onCardClick={setSelectedCard}
+            onEditProfile={onEditProfile} onAddPlace=
+            {onAddPlace} onEditAvatar={onEditAvatar}
+            loggedIn={isLogged}
+            component={Main} />
         </Switch>
         <Footer> </Footer>
         <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">

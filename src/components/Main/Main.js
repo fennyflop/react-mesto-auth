@@ -7,10 +7,6 @@ function Main(props) {
 
     const currentUser = React.useContext(CurrentUserContext);
 
-    if (!currentUser || !props.cards) {
-        return null;
-    }
-
     return (
         <main>
             <section className="profile">

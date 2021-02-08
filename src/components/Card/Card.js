@@ -9,15 +9,11 @@ function Card({ card, onCardClick, onLike, onDelete }) {
         return null;
     }
 
-    const isOwn = card.owner._id === currentUser._id;
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
-
     const cardDeleteButtonClass = (
-        `gallery__delete-button ${isOwn ? '' : 'gallery__delete-button_display_none'}`
+        `gallery__delete-button ${card.owner === currentUser._id ? '' : 'gallery__delete-button_display_none'}`
     )
 
-    const cardLikeButtonClassName = `gallery__like-button ${isLiked ? 'gallery__like-button_liked' : ''}`;
+    const cardLikeButtonClassName = `gallery__like-button ${card.likes.some((i) => i._id === currentUser._id) ? 'gallery__like-button_liked' : ''}`;
 
     function handleClick() {
         onCardClick(card);
