@@ -9,3 +9,14 @@
 .header__button:hover {
     cursor: pointer;
 }
+.header__email {
+    color: white;
+    margin: 0 24px 0 0;
+}
+.header__initials {
+    display: flex;
+}
+.header__text {
+    margin: 0;
+    color: white;
+}

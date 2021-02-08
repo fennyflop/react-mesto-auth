@@ -2,7 +2,7 @@ import './Registration.css';
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
-function Registration() {
+function Registration({ handleRegister }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,23 +17,8 @@ function Registration() {
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        fetch('https://auth.nomoreparties.co/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
-            .then((res => res.json()))
-            .then((res) => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        handleRegister(email, password);
     }
-
-    // useEffect(() => {
-    //     console.log(email, password);
-    // }, [email, password]);
 
     return (
         <section className="registration">

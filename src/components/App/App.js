@@ -16,32 +16,36 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Login from '../Login/Login';
 
 
-function App(props) {
+function App() {
 
   const history = useHistory();
 
   // Статуcы попапов  и функции попапов
 
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [isLogged, setIsLogged] = useState(false);
+  const [email, setEmail] = useState('');
+  const [successState, setSuccessState] = useState(false);
+
+  // Всплывающие окна
+
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(true);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [isLogged, setIsLogged] = useState(true);
-  const [userEmail, setUserEmail] = useState('');
+  const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
 
   function onEditProfile() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-  }
+  };
 
   function onAddPlace() {
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
-  }
+  };
 
 
   function onEditAvatar() {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-  }
+  };
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -49,32 +53,28 @@ function App(props) {
     setIsAddPlacePopupOpen(false);
     setIsInfoPopupOpen(false);
     setSelectedCard(null);
-  }
+  };
 
-  // Текующий пользователь и все карточки
-
-  const [currentUser, setCurrentUser] = useState();
-  const [cards, setCards] = useState();
+  // Пользователь не должен повторно входить
 
   useEffect(() => {
-    // Получаем инициалы пользователя при заходе
+    console.log(isLogged);
+  }, [isLogged])
+
+  useEffect(() => {
     api.getInitialsInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      }).catch((res) => {
-        console.log(res);
-      })
-    // Получаем первоначальные карточки
-    api.getInitialCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((res) => {
-        console.log(res);
+      .then(({ data }) => {
+        if (data) {
+          setIsLogged(true);
+          setEmail(data.email)
+          history.push('main');
+        }
       })
   }, []);
 
   // Функции, которые редактируют/добавляют информацию
+
+  const [currentUser, setCurrentUser] = useState();
 
   function handleUpdateUser(name, about) {
     api.postProfile(name, about)
@@ -105,6 +105,10 @@ function App(props) {
       })
   }
 
+  // Операторы с карточками
+
+  const [cards, setCards] = useState();
+
   function handleAddCard(title, link) {
     api.postCard(title, link)
       .then((card) => {
@@ -114,9 +118,7 @@ function App(props) {
       .catch((res) => {
         console.log(res);
       })
-  }
-
-  // Операторы с карточками
+  };
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -128,7 +130,7 @@ function App(props) {
       .catch((res) => {
         console.log(res);
       })
-  }
+  };
 
   function handleCardDelete(card) {
     api.deleteCard(card._id)
@@ -141,54 +143,69 @@ function App(props) {
       });
   };
 
+  // Вход
+
   function handleLogin(email, password) {
-    fetch('https://auth.nomoreparties.co/signin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    })
-      .then((res) => {
-        return res.json();
-      })
+    api.handleLogin(email, password)
       .then((data) => {
         if (data.token) {
-          localStorage.setItem('token', data.token);
-          setUserEmail(email);
           setIsLogged(true);
-          history.push('/');
-        };
+          setEmail(email);
+          history.push('/main');
+          localStorage.setItem('jwt', data.token);
+        } else {
+          setSuccessState(false);
+          setIsInfoPopupOpen(true);
+        }
       })
   };
 
-  function handleLogout() {
-    localStorage.removeItem('token');
-    setIsLogged(false);
+  // Регистрация
+
+  function handleRegister(email, password) {
+    api.handleRegister(email, password)
+      .then((res) => {
+        if (res.data) {
+          setSuccessState(true);
+          setIsInfoPopupOpen(true);
+          history.push('sign-in');
+        } else {
+          setSuccessState(false);
+          setIsInfoPopupOpen(true);
+        }
+      })
+      .catch(() => {
+        setSuccessState(false);
+        setIsInfoPopupOpen(true);
+      })
   }
 
-  useState(() => {
-    console.log(isLogged);
-  }, [isLogged]);
+  // Выход
+
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setIsLogged(false);
+    history.push('sign-in');
+  };
 
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+        <Header email={email} handleLogout={handleLogout} />
         <Switch>
           <Route path="/sign-up">
-            <Register />
+            <Register handleRegister={handleRegister} />
           </Route>
           <Route path="/sign-in">
             <Login handleLogin={handleLogin} />
           </Route>
-          <Route exact path="/">
-            {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          <Route exact path="">
+            {isLogged ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
           </Route>
-          <ProtectedRoute onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Header} path="/" />
+          <ProtectedRoute path="/main" onDelete={handleCardDelete} onLike={handleCardLike} cards={cards} onCardClick={setSelectedCard} onEditProfile={onEditProfile} onAddPlace={onAddPlace} onEditAvatar={onEditAvatar} loggedIn={isLogged} component={Main} />
         </Switch>
         <Footer> </Footer>
-        {/* <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
+        <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
         </EditProfilePopup>
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} onClose={closeAllPopups} isOpen={isEditAvatarPopupOpen}>
         </EditAvatarPopup>
@@ -200,7 +217,7 @@ function App(props) {
           </form>
         </PopupWithForm>
         <ImagePopup onClose={closeAllPopups} card={selectedCard}> </ImagePopup>
-        <InfoToolTip isOpen={false} onClose={closeAllPopups} /> */}
+        <InfoToolTip success={successState} isOpen={isInfoPopupOpen} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>
     </>
   );

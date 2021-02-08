@@ -10,8 +10,8 @@ class Api { // У меня вроде бы всё работает
     getInitialCards() {
         return fetch(`${this._baseUrl}/cards`, {
             headers: {
-                authorization: this._token,
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
+                "Authorization": this._token,
             },
         })
             .then(res => {
@@ -24,8 +24,8 @@ class Api { // У меня вроде бы всё работает
     getInitialsInfo() {
         return fetch(`${this._baseUrl}/users/me`, {
             headers: {
-                authorization: this._token,
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
+                "Authorization": this._token,
             },
         })
             .then(res => {
@@ -39,8 +39,8 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/users/me`, {
             method: "PATCH",
             headers: {
-                authorization: this._token,
                 "Content-Type": "application/json",
+                "Authorization": this._token,
             },
             body: JSON.stringify({
                 name: name,
@@ -57,8 +57,8 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/users/me/avatar`, {
             method: "PATCH",
             headers: {
-                authorization: this._token,
                 "Content-Type": "application/json",
+                "Authorization": this._token,
             },
             body: JSON.stringify({
                 avatar: avatarInput,
@@ -73,8 +73,8 @@ class Api { // У меня вроде бы всё работает
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "DELETE",
                 headers: {
-                    authorization: this._token,
                     "Content-Type": "application/json",
+                    "Authorization": this._token,
                 },
             }).then((res) => {
                 return this._handleOriginalResponse(res);
@@ -83,8 +83,8 @@ class Api { // У меня вроде бы всё работает
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "PUT",
                 headers: {
-                    'Content-Type': 'application/json',
-                    authorization: this._token,
+                    "Content-Type": "application/json",
+                    "Authorization": this._token,
                 },
             }).then((res) => {
                 return this._handleOriginalResponse(res);
@@ -98,8 +98,8 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards/${id}`, {
             method: "DELETE",
             headers: {
-                'Content-Type': 'application/json',
-                authorization: this._token,
+                "Content-Type": "application/json",
+                "Authorization": this._token,
             },
         }).then((res) => {
             return this._handleOriginalResponse(res);
@@ -112,13 +112,39 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                authorization: this._token,
+                "Content-Type": "application/json",
+                "Authorization": this._token,
             },
             body: JSON.stringify({
                 name: title,
                 link: link,
             }),
+        })
+            .then(res => {
+                return this._handleOriginalResponse(res);
+            })
+    }
+
+    handleLogin(email, password) {
+        return fetch(`${this._baseUrl}/signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then((res) => {
+                return this._handleOriginalResponse(res);
+            })
+    }
+
+    handleRegister(email, password) {
+        return fetch(`${this._baseUrl}/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
         })
             .then(res => {
                 return this._handleOriginalResponse(res);
@@ -137,7 +163,7 @@ class Api { // У меня вроде бы всё работает
 const api = new Api({
     baseUrl: "https://auth.nomoreparties.co",
     headers: { 'Content-Type': 'application/json', },
-    token: "16bbf0d2-da12-4d9c-809d-74b46ac64585",
+    token: `Bearer ${localStorage.getItem('jwt')}`
 });
 
 export default api;
