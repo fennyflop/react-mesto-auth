@@ -7,12 +7,16 @@ function Main(props) {
 
     const currentUser = React.useContext(CurrentUserContext);
 
+    if (!currentUser || !props.cards) {
+        return null;
+    };
+
     return (
         <main>
             <section className="profile">
                 <div className="profile__info">
                     <div className="profile__avatar-container">
-                        <img className="profile__avatar" alt="Аватарка пользователя" src={currentUser.avatar && defaultAvatar} />
+                        <img className="profile__avatar" alt="Аватарка пользователя" src={currentUser.avatar ? currentUser.avatar : defaultAvatar} />
                         <button className="profule__button profile__button_action_edit-avatar" type="button" aria-label="Редактировать аватар профиля" onClick={props.onEditAvatar}>
 
                         </button>

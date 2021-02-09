@@ -61,8 +61,9 @@ function App() {
     const jwt = localStorage.getItem('jwt');
     if (jwt) { // Если есть jwt, это обозначает что можно найти данные.
       getCurrentUser(jwt);
+      getCurrentCards(jwt);
+      setIsLogged(true);
       history.push('/');
-      // getCurrentCards();
     }
   }, []);
 
@@ -105,7 +106,7 @@ function App() {
 
   function handleAddCard(title, link) {
     api.postCard(title, link)
-      .then((card) => {
+      .then(({ data: card }) => {
         setCards([card, ...cards]);
         closeAllPopups();
       })
@@ -116,6 +117,7 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    console.log(card);
     api.handleLike(card._id, !isLiked)
       .then((newCard) => {
         const newCards = cards.map((c) => c._id === card._id ? newCard : c);
@@ -143,7 +145,6 @@ function App() {
     api.getInitialsInfo(jwt)
       .then(({ data: user }) => {
         setCurrentUser(user);
-        console.log(currentUser);
         setEmail(user.email);
       })
       .catch((err) => {
@@ -210,6 +211,11 @@ function App() {
     setIsLogged(false);
     history.push('sign-in');
   };
+
+  // useEffect(() => {
+  //   console.log(currentUser);
+  //   console.log(cards);
+  // }, [currentUser, cards])
 
   return (
     <>

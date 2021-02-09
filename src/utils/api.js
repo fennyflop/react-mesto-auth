@@ -70,6 +70,7 @@ class Api { // У меня вроде бы всё работает
     }
 
     handleLike(id, isLiked) {
+        console.log(id);
         if (!isLiked) {
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "DELETE",
@@ -77,6 +78,7 @@ class Api { // У меня вроде бы всё работает
                     "Content-Type": "application/json",
                     "Authorization": this._token,
                 },
+                "Authorization": this._token,
             }).then((res) => {
                 return this._handleOriginalResponse(res);
             });
@@ -87,6 +89,7 @@ class Api { // У меня вроде бы всё работает
                     "Content-Type": "application/json",
                     "Authorization": this._token,
                 },
+                "Authorization": this._token,
             }).then((res) => {
                 return this._handleOriginalResponse(res);
             });
@@ -116,6 +119,7 @@ class Api { // У меня вроде бы всё работает
                 "Content-Type": "application/json",
                 "Authorization": this._token,
             },
+            "Authorization": this._token,
             body: JSON.stringify({
                 name: title,
                 link: link,

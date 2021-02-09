@@ -16,8 +16,9 @@ export default function AddPlacePopup(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        // props.onAddCard(title, link);
         props.onAddCard(title, link);
+        setTitle('');
+        setLink('');
     }
 
     return (
