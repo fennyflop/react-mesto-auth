@@ -7,11 +7,11 @@ class Api { // У меня вроде бы всё работает
 
     // Получает первоначальные карточки
 
-    getInitialCards() {
+    getInitialCards(jwt) {
         return fetch(`${this._baseUrl}/cards`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": this._token,
+                "Authorization": `Bearer ${jwt}`,
             },
         })
             .then(res => {
@@ -21,11 +21,11 @@ class Api { // У меня вроде бы всё работает
 
     // Получиает информацию
 
-    getInitialsInfo() {
+    getInitialsInfo(jwt) {
         return fetch(`${this._baseUrl}/users/me`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": this._token,
+                "Authorization": `Bearer ${jwt}`,
             },
         })
             .then(res => {
@@ -60,6 +60,7 @@ class Api { // У меня вроде бы всё работает
                 "Content-Type": "application/json",
                 "Authorization": this._token,
             },
+            authorization: this._token,
             body: JSON.stringify({
                 avatar: avatarInput,
             }),

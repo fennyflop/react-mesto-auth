@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from '../Card/Card';
-import Login from '../Login/Login';
+import defaultAvatar from '../../images/defaultAvatar.png';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 function Main(props) {
@@ -12,7 +12,7 @@ function Main(props) {
             <section className="profile">
                 <div className="profile__info">
                     <div className="profile__avatar-container">
-                        <img className="profile__avatar" alt="Аватарка пользователя" src={currentUser.avatar} />
+                        <img className="profile__avatar" alt="Аватарка пользователя" src={currentUser.avatar && defaultAvatar} />
                         <button className="profule__button profile__button_action_edit-avatar" type="button" aria-label="Редактировать аватар профиля" onClick={props.onEditAvatar}>
 
                         </button>

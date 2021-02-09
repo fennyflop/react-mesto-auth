@@ -58,14 +58,12 @@ function App() {
   // Пользователь не должен повторно входить
 
   useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      api.getInitialsInfo()
-        .then(({ data }) => {
-          if (data) {
-            getContent();
-          }
-        })
-    };
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) { // Если есть jwt, это обозначает что можно найти данные.
+      getCurrentUser(jwt);
+      history.push('/');
+      // getCurrentCards();
+    }
   }, []);
 
   // Функции, которые редактируют/добавляют информацию
@@ -141,34 +139,36 @@ function App() {
 
   // Вход
 
-  useEffect(() => {
-    console.log(currentUser);
-  }, [currentUser])
-
-  function getContent() {
-    api.getInitialsInfo()
-      .then(({ data }) => {
-        if (data) {
-          setCurrentUser(data);
-          setIsLogged(true);
-          setEmail(data.email)
-          history.push('/');
-        }
+  function getCurrentUser(jwt) {
+    api.getInitialsInfo(jwt)
+      .then(({ data: user }) => {
+        setCurrentUser(user);
+        console.log(currentUser);
+        setEmail(user.email);
+      })
+      .catch((err) => {
+        console.log(`Произошла ошибка : ${err}`);
       });
-    api.getInitialCards()
-      .then(({ data }) => {
-        if (data) {
-          setCards(data);
-        }
+  };
+
+  function getCurrentCards(jwt) {
+    api.getInitialCards(jwt)
+      .then(({ data: cardItems }) => {
+        setCards(cardItems);
+      })
+      .catch((err) => {
+        console.log(`Произошла ошибка : ${err}`);
       })
   }
 
   function handleLogin(email, password) {
     api.handleLogin(email, password)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          getContent();
+      .then(({ token }) => {
+        if (token) {
+          localStorage.setItem('jwt', token);
+          getCurrentUser(token);
+          getCurrentCards(token);
+          setIsLogged(true);
           history.push('/');
         } else {
           setSuccessState(false);
@@ -222,9 +222,6 @@ function App() {
           <Route path="/sign-up">
             <Register handleRegister={handleRegister} />
           </Route>
-          {/* <Route exact path="">
-            {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-          </Route> */}
           <ProtectedRoute
             path="/"
             onDelete={handleCardDelete}
@@ -235,6 +232,9 @@ function App() {
             {onAddPlace} onEditAvatar={onEditAvatar}
             loggedIn={isLogged}
             component={Main} />
+          <Route exact path="">
+            {isLogged ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          </Route>
         </Switch>
         <Footer> </Footer>
         <EditProfilePopup onUpdateUser={handleUpdateUser} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} title="Редактировать профиль" name="edit">
@@ -243,10 +243,8 @@ function App() {
         </EditAvatarPopup>
         <AddPlacePopup onAddCard={handleAddCard} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}></AddPlacePopup>
         <PopupWithForm onClose={closeAllPopups} title="Вы уверены?" name="confirmation">
-          <form className="form confirmation__form">
-            <button type="submit" className="form__submit-button confirmation__button" id="card-submit"
-              aria-label="Отправить форму">Да</button>
-          </form>
+          <button type="submit" className="form__submit-button confirmation__button"
+            aria-label="Отправить форму">Да</button>
         </PopupWithForm>
         <ImagePopup onClose={closeAllPopups} card={selectedCard}> </ImagePopup>
         <InfoToolTip success={successState} isOpen={isInfoPopupOpen} onClose={closeAllPopups} />
