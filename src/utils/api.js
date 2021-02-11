@@ -1,17 +1,20 @@
 class Api { // У меня вроде бы всё работает
     constructor(config) {
         this._baseUrl = config.baseUrl;
+        this._baseUrlReg = config.baseUrlReg;
         this._token = config.token;
+        this._tokenReg = config.tokenReg;
         this._headers = config.headers;
     }
 
     // Получает первоначальные карточки
 
-    getInitialCards(jwt) {
+    getInitialCards() {
         return fetch(`${this._baseUrl}/cards`, {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwt}`,
+                'Content-Type': 'application/json',
+                authorization: this._token,
             },
         })
             .then(res => {
@@ -19,13 +22,14 @@ class Api { // У меня вроде бы всё работает
             })
     }
 
+
     // Получиает информацию
 
-    getInitialsInfo(jwt) {
-        return fetch(`${this._baseUrl}/users/me`, {
+    getInitialsInfo() {
+        return fetch(`${this._baseUrlReg}/users/me`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwt}`,
+                authorization: this._tokenReg,
             },
         })
             .then(res => {
@@ -39,8 +43,8 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/users/me`, {
             method: "PATCH",
             headers: {
+                authorization: this._token,
                 "Content-Type": "application/json",
-                "Authorization": this._token,
             },
             body: JSON.stringify({
                 name: name,
@@ -57,10 +61,9 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/users/me/avatar`, {
             method: "PATCH",
             headers: {
+                authorization: this._token,
                 "Content-Type": "application/json",
-                "Authorization": this._token,
             },
-            authorization: this._token,
             body: JSON.stringify({
                 avatar: avatarInput,
             }),
@@ -70,15 +73,13 @@ class Api { // У меня вроде бы всё работает
     }
 
     handleLike(id, isLiked) {
-        console.log(id);
         if (!isLiked) {
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "DELETE",
                 headers: {
+                    authorization: this._token,
                     "Content-Type": "application/json",
-                    "Authorization": this._token,
                 },
-                "Authorization": this._token,
             }).then((res) => {
                 return this._handleOriginalResponse(res);
             });
@@ -86,10 +87,9 @@ class Api { // У меня вроде бы всё работает
             return fetch(`${this._baseUrl}/cards/likes/${id}`, {
                 method: "PUT",
                 headers: {
+                    authorization: this._token,
                     "Content-Type": "application/json",
-                    "Authorization": this._token,
                 },
-                "Authorization": this._token,
             }).then((res) => {
                 return this._handleOriginalResponse(res);
             });
@@ -102,8 +102,7 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards/${id}`, {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": this._token,
+                authorization: this._token,
             },
         }).then((res) => {
             return this._handleOriginalResponse(res);
@@ -116,10 +115,9 @@ class Api { // У меня вроде бы всё работает
         return fetch(`${this._baseUrl}/cards`, {
             method: "POST",
             headers: {
+                authorization: this._token,
                 "Content-Type": "application/json",
-                "Authorization": this._token,
             },
-            "Authorization": this._token,
             body: JSON.stringify({
                 name: title,
                 link: link,
@@ -131,7 +129,7 @@ class Api { // У меня вроде бы всё работает
     }
 
     handleLogin(email, password) {
-        return fetch(`${this._baseUrl}/signin`, {
+        return fetch(`${this._baseUrlReg}/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,9 +164,11 @@ class Api { // У меня вроде бы всё работает
 }
 
 const api = new Api({
-    baseUrl: "https://auth.nomoreparties.co",
+    baseUrlReg: "https://auth.nomoreparties.co", // Для регистрации
+    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-17",
     headers: { 'Content-Type': 'application/json', },
-    token: `Bearer ${localStorage.getItem('jwt')}`
+    token: "16bbf0d2-da12-4d9c-809d-74b46ac64585",
+    tokenReg: `Bearer ${localStorage.getItem('jwt')}`
 });
 
 export default api;

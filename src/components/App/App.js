@@ -60,8 +60,8 @@ function App() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) { // Если есть jwt, это обозначает что можно найти данные.
-      getCurrentUser(jwt);
-      getCurrentCards(jwt);
+      getCurrentUser();
+      getCurrentCards();
       setIsLogged(true);
       history.push('/');
     }
@@ -117,7 +117,7 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    console.log(card);
+    // console.log(card._id, isLiked);
     api.handleLike(card._id, !isLiked)
       .then((newCard) => {
         const newCards = cards.map((c) => c._id === card._id ? newCard : c);
@@ -141,9 +141,10 @@ function App() {
 
   // Вход
 
-  function getCurrentUser(jwt) {
-    api.getInitialsInfo(jwt)
+  function getCurrentUser() {
+    api.getInitialsInfo()
       .then(({ data: user }) => {
+        console.log(user);
         setCurrentUser(user);
         setEmail(user.email);
       })
@@ -152,10 +153,11 @@ function App() {
       });
   };
 
-  function getCurrentCards(jwt) {
-    api.getInitialCards(jwt)
+  function getCurrentCards() {
+    api.getInitialCards()
       .then(({ data: cardItems }) => {
-        setCards(cardItems);
+        console.log(cardItems);
+        // setCards(cardItems);
       })
       .catch((err) => {
         console.log(`Произошла ошибка : ${err}`);
@@ -167,8 +169,8 @@ function App() {
       .then(({ token }) => {
         if (token) {
           localStorage.setItem('jwt', token);
-          getCurrentUser(token);
-          getCurrentCards(token);
+          getCurrentUser();
+          getCurrentCards();
           setIsLogged(true);
           history.push('/');
         } else {
