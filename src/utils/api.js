@@ -1,9 +1,7 @@
 class Api { // У меня вроде бы всё работает
     constructor(config) {
         this._baseUrl = config.baseUrl;
-        this._baseUrlReg = config.baseUrlReg;
         this._token = config.token;
-        this._tokenReg = config.tokenReg;
         this._headers = config.headers;
     }
 
@@ -11,9 +9,8 @@ class Api { // У меня вроде бы всё работает
 
     getInitialCards() {
         return fetch(`${this._baseUrl}/cards`, {
-            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "applicationes/json",
                 authorization: this._token,
             },
         })
@@ -22,14 +19,12 @@ class Api { // У меня вроде бы всё работает
             })
     }
 
-
     // Получиает информацию
 
     getInitialsInfo() {
-        return fetch(`${this._baseUrlReg}/users/me`, {
+        return fetch(`${this._baseUrl}/users/me`, {
             headers: {
-                "Content-Type": "application/json",
-                authorization: this._tokenReg,
+                authorization: this._token,
             },
         })
             .then(res => {
@@ -128,8 +123,20 @@ class Api { // У меня вроде бы всё работает
             })
     }
 
+    handleUsersEmail(jwt) {
+        return fetch('https://auth.nomoreparties.co/users/me', {
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${jwt}`,
+            },
+        })
+            .then(res => {
+                return this._handleOriginalResponse(res);
+            })
+    }
+
     handleLogin(email, password) {
-        return fetch(`${this._baseUrlReg}/signin`, {
+        return fetch('https://auth.nomoreparties.co/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -140,16 +147,15 @@ class Api { // У меня вроде бы всё работает
                 return this._handleOriginalResponse(res);
             })
     }
-
-    handleRegister(email, password) {
-        return fetch(`${this._baseUrl}/signup`, {
+    handleRegister(email, password) { // Другой baseurl и токен
+        return fetch('https://auth.nomoreparties.co/signup', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password }),
         })
-            .then(res => {
+            .then((res) => {
                 return this._handleOriginalResponse(res);
             })
     }
@@ -164,11 +170,9 @@ class Api { // У меня вроде бы всё работает
 }
 
 const api = new Api({
-    baseUrlReg: "https://auth.nomoreparties.co", // Для регистрации
     baseUrl: "https://mesto.nomoreparties.co/v1/cohort-17",
-    headers: { 'Content-Type': 'application/json', },
+    headers: { "Content-Type": "applicationes/json" },
     token: "16bbf0d2-da12-4d9c-809d-74b46ac64585",
-    tokenReg: `Bearer ${localStorage.getItem('jwt')}`
 });
 
 export default api;
