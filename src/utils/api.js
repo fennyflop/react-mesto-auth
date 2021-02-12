@@ -123,7 +123,7 @@ class Api { // У меня вроде бы всё работает
             })
     }
 
-    handleUsersEmail(jwt) {
+    handleCheckToken(jwt) {
         return fetch('https://auth.nomoreparties.co/users/me', {
             headers: {
                 "Content-Type": "application/json",

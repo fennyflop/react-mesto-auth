@@ -60,13 +60,26 @@ function App() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      getCurrentUser();
-      getCurrentCards();
-      getUserEmail(jwt);
-      setIsLogged(true);
-      history.push('/');
+      checkToken(jwt);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isLogged) {
+      return;
+    };
+    Promise.all([
+      getCurrentUser(),
+      getCurrentCards()
+    ])
+      .then(([userData, cardItems]) => {
+        setCurrentUser(userData);
+        setCards(cardItems);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [isLogged]);
 
   // Функции, которые редактируют/добавляют информацию
 
@@ -74,29 +87,24 @@ function App() {
 
   function handleUpdateUser(name, about) {
     api.postProfile(name, about)
-      .then(() => {
-        setCurrentUser({
-          ...currentUser,
-          name: name,
-          about: about,
-        });
+      .then((userData) => {
+        setCurrentUser(userData);
         closeAllPopups();
       })
       .catch((res) => {
+        openError();
         console.log(res);
       })
   }
 
   function handleUpdateAvatar(link) {
     api.postAvatar(link)
-      .then(() => {
-        setCurrentUser({
-          ...currentUser,
-          avatar: link
-        });
+      .then((userData) => {
+        setCurrentUser(userData);
         closeAllPopups();
       })
       .catch((res) => {
+        openError();
         console.log(res);
       })
   }
@@ -107,12 +115,13 @@ function App() {
 
   function handleAddCard(title, link) {
     api.postCard(title, link)
-      .then(({ data: card }) => {
+      .then((card) => {
         setCards([card, ...cards]);
         closeAllPopups();
       })
       .catch((res) => {
         console.log(res);
+        openError();
       })
   };
 
@@ -125,6 +134,7 @@ function App() {
       })
       .catch((res) => {
         console.log(res);
+        openError();
       })
   };
 
@@ -136,35 +146,38 @@ function App() {
       })
       .catch((res) => {
         console.log(res);
+        openError();
       });
   };
 
   // Вход
 
   function getCurrentUser() {
-    api.getInitialsInfo()
-      .then((user) => {
-        setCurrentUser(user);
+    return api.getInitialsInfo()
+      .then((userData) => {
+        return userData;
       })
       .catch((err) => {
         console.log(`Произошла ошибка : ${err}`);
       });
   };
 
-  function getUserEmail(jwt) {
-    api.handleUsersEmail(jwt)
-      .then(({ data }) => {
-        setEmail(data.email);
-      })
-  }
-
   function getCurrentCards() {
-    api.getInitialCards()
+    return api.getInitialCards()
       .then((cardItems) => {
-        setCards(cardItems);
+        return cardItems;
       })
       .catch((err) => {
         console.log(`Произошла ошибка : ${err}`);
+      })
+  };
+
+  function checkToken(jwt) {
+    api.handleCheckToken(jwt)
+      .then(({ data: userData }) => {
+        setEmail(userData.email);
+        setIsLogged(true);
+        history.push('/');
       })
   }
 
@@ -173,19 +186,25 @@ function App() {
       .then(({ token }) => {
         if (token) {
           localStorage.setItem('jwt', token);
-          getCurrentUser();
-          getCurrentCards();
-          setEmail(email);
-          setIsLogged(true);
-          history.push('/');
+          checkToken(token);
         } else {
-          setSuccessState(false);
-          setIsInfoPopupOpen(true);
+          openError();
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.includes('400')) {
+          console.log('Не передано одно из полей')
+        } else if (err.includes('401')) {
+          console.log('Пользователь с email не найден');
+        } else {
+          console.log('Ошибка!');
+        }
       })
+  };
+
+  function openError() {
+    setSuccessState(false);
+    setIsInfoPopupOpen(true);
   };
 
   // Регистрация
@@ -205,9 +224,8 @@ function App() {
       .catch((err) => {
         if (err.includes('400')) {
           console.log('Некорректно заполнено одно из полей ')
-        }
-        setSuccessState(false);
-        setIsInfoPopupOpen(true);
+        };
+        openError();
       })
   }
 
