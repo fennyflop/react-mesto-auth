@@ -14,6 +14,7 @@ import Register from '../Registration/Registration';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Login from '../Login/Login';
+import ConfirmationPopup from '../ConfirmationPopup/Confirmation';
 
 
 function App() {
@@ -271,10 +272,11 @@ function App() {
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} onClose={closeAllPopups} isOpen={isEditAvatarPopupOpen}>
         </EditAvatarPopup>
         <AddPlacePopup onAddCard={handleAddCard} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}></AddPlacePopup>
-        <PopupWithForm onClose={closeAllPopups} title="Вы уверены?" name="confirmation">
+        <ConfirmationPopup onClose={closeAllPopups} title="Вы уверены?" name="confirmation" />
+        {/* <PopupWithForm onClose={closeAllPopups} title="Вы уверены?" name="confirmation">
           <button type="submit" className="form__submit-button confirmation__button"
             aria-label="Отправить форму">Да</button>
-        </PopupWithForm>
+        </PopupWithForm> */}
         <ImagePopup onClose={closeAllPopups} card={selectedCard}> </ImagePopup>
         <InfoToolTip success={successState} isOpen={isInfoPopupOpen} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>
