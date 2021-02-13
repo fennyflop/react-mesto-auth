@@ -120,8 +120,8 @@ function App() {
         closeAllPopups();
       })
       .catch((res) => {
-        console.log(res);
         openError();
+        console.log(res);
       })
   };
 
@@ -178,6 +178,9 @@ function App() {
         setEmail(userData.email);
         setIsLogged(true);
         history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
       })
   }
 

@@ -24,8 +24,8 @@ function Login({ handleLogin }) {
             <h1 className="login__title">Вход</h1>
             <form className="login__form" onSubmit={handleSubmit}>
                 <fieldset className="login__fieldset">
-                    <input type="text" className="login__input" placeholder="Email" onChange={handleEmailChange} />
-                    <input type="password" className="login__input" placeholder="Пароль" onChange={handlePasswordChange} />
+                    <input type="text" className="login__input" placeholder="Email" onChange={handleEmailChange} value={email} />
+                    <input type="password" className="login__input" placeholder="Пароль" onChange={handlePasswordChange} value={password} />
                 </fieldset>
                 <button type="submit" className="login__submit">Войти</button>
             </form>

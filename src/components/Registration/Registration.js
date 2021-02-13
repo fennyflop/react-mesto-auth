@@ -25,8 +25,8 @@ function Registration({ handleRegister }) {
             <h1 className="registration__title">Регистрация</h1>
             <form className="registration__form" onSubmit={handleSubmit}>
                 <fieldset className="registration__fieldset">
-                    <input type="text" className="registration__input" placeholder="Email" onChange={handleEmailChange} />
-                    <input type="password" className="registration__input" placeholder="Пароль" onChange={handlePasswordChange} />
+                    <input type="text" className="registration__input" placeholder="Email" onChange={handleEmailChange} value={email} />
+                    <input type="password" className="registration__input" placeholder="Пароль" onChange={handlePasswordChange} value={password} />
                 </fieldset>
                 <button type="submit" className="registration__submit">Войти</button>
             </form>
